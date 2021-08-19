@@ -29,12 +29,12 @@ const Home: React.FC = () => {
       <Row>
         {(data || []).map((device: DeviceType) => {
           return (
-            <Column key={device.key} xs={12} md={6}>
+            <Column key={device.publicKey} xs={12} md={6}>
               <DataCard
                 title={device.name}
                 data={{ 'Data Rows': device.numRows.toFixed(0), 'Last Entry': moment(device.lastEntry).fromNow() }}
                 headerItems={[
-                  <Button key='view' link={'/' + device.key} type={ButtonType.Primary} stretched={true} small={true} icon={faSearch} text='View Data' />
+                  <Button key='view' link={'/' + device.publicKey} type={ButtonType.Primary} stretched={true} small={true} icon={faSearch} text='View Data' />
                 ]}
               />
             </Column>

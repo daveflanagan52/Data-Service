@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import io from 'socket.io-client';
+import Chart from 'react-apexcharts';
 import { useParams } from 'react-router';
-import { Line } from 'react-chartjs-2';
 import { faClock, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -15,30 +15,11 @@ import Loader from '../../Components/Loader';
 import Row from '../../Components/Row';
 
 import { useGetDataQuery, useGetDeviceQuery } from '../../Services/Data';
-
-import { Chart } from 'chart.js';
-import zoomPlugin from 'chartjs-plugin-zoom';
-
-Chart.register(zoomPlugin);
-
-const colors = [
-  '121, 123, 242',
-  '255, 169, 129'
-];
+import { DataRow } from '../../Types';
 
 interface Dataset {
-  label: string,
+  name: string,
   data: KeyNumberStringList[],
-  fill: boolean,
-  tension: number,
-  order: number,
-  pointRadius: number,
-  borderWidth: number,
-  backgroundColor: string,
-  borderColor: string,
-  parsing: {
-    yAxisKey: string,
-  }
 };
 
 interface KeyNumberStringList {
@@ -67,7 +48,7 @@ const Device: React.FC = () => {
   const [minimums, setMinimums] = useState({});
   const [maximums, setMaximums] = useState({});
   const [averages, setAverages] = useState({});
-  const [datasets, setDatasets] = useState([]);
+  const [series, setSeries] = useState([]);
   const [period, setPeriod] = useState('week');
 
   const device = useGetDeviceQuery(key);
@@ -78,7 +59,7 @@ const Device: React.FC = () => {
       const socket = io('/device', {
         path: '/api/v1/socket.io/device',
         query: {
-          'key': device.data.key,
+          'key': device.data.publicKey,
         }
       });
       socket.on('connect', () => {
@@ -87,57 +68,39 @@ const Device: React.FC = () => {
       socket.on('disconnect', data => {
         console.log('disconnected');
       });
-      socket.on('data', data => {
+      socket.on('data', (data: DataRow) => {
+        data.entries.forEach(entry => {
+          ApexCharts.exec('realtime', entry.key, [{
+            data: entry.value,
+          }]);
+        });
       });
     }
   }, [device.data])
 
   useEffect(() => {
-    setLabels((data || []).map(row => moment(row.createdAt).format('llll')));
-
-    const fomattedData = (data || []).map(row => {
-      return {
-        x: moment(row.createdAt).format('llll'),
-        ...row.entries.reduce((previous, entry) => ({ ...previous, [entry.key]: entry.value }), {})
-      } as KeyNumberStringList;
-    });
-
-    let colorIndex = 0;
-    const _datasets: { [key: string]: Dataset } = {};
+    setLabels((data || []).reduce((p, v) => [...p, moment(v.createdAt).format('llll')], []));
+    const _series: Dataset[] = [];
     const _minimums: KeyNumberList = {};
     const _maximums: KeyNumberList = {};
     const _averages: KeyNumberList = {};
 
-    fomattedData.forEach(row => {
-      Object.keys(row).forEach(key => {
-        if (key !== 'x' && !_datasets[key]) {
-          const filtered = fomattedData.map(r => r[key]).filter(x => typeof x === 'number') as unknown as number[];
-          _averages[key] = filtered.reduce((p, v) => p + v, 0) / filtered.length;
-          _minimums[key] = filtered.reduce((p, v) => p < v ? p : v, Number.MAX_VALUE);
-          _maximums[key] = filtered.reduce((p, v) => p > v ? p : v, Number.MIN_VALUE);
-          _datasets[key] = {
-            label: key,
-            data: fomattedData,
-            fill: false,
-            tension: 0.1,
-            order: 100 - colorIndex,
-            pointRadius: 1,
-            borderWidth: 3,
-            backgroundColor: 'rgba(' + colors[colorIndex] + ', 1)',
-            borderColor: 'rgba(' + colors[colorIndex] + ', 1)',
-            parsing: {
-              yAxisKey: key
-            }
-          };
-          colorIndex++;
-        }
+    const keys = (data || []).reduce((keys, row) => row.entries.reduce((previous, entry) => previous.includes(entry.key) ? previous : [...previous, entry.key], keys), []);
+    keys.forEach(key => {
+      const filtered = ((data || []) as DataRow[]).reduce((previous, row) => [...previous, [moment(row.createdAt).valueOf(), row.entries.filter(x => x.key === key).pop()?.value || 0]], []);
+      _averages[key] = filtered.reduce((p, v) => p + v[1], 0) / filtered.length;
+      _minimums[key] = filtered.reduce((p, v) => p < v[1] ? p : v[1], Number.MAX_VALUE);
+      _maximums[key] = filtered.reduce((p, v) => p > v[1] ? p : v[1], Number.MIN_VALUE);
+      _series.push({
+        name: key,
+        data: filtered,
       });
     });
 
     setAverages(_averages);
     setMinimums(_minimums);
     setMaximums(_maximums);
-    setDatasets(Object.values(_datasets));
+    setSeries(_series);
   }, [data, period]);
 
   if (!device.isLoading && !device.data) {
@@ -148,7 +111,7 @@ const Device: React.FC = () => {
     <>
       <Loader show={isLoading || device.isLoading} />
       <h1>{device?.data?.name || (device?.isLoading ? 'Loading...' : 'Not Found')}</h1>
-      {!isLoading && labels.length === 0 && (
+      {!isLoading && series.length === 0 && (
         <Alert type={AlertType.Warning} icon={faSearch} message='No data returned for the selected time period.' />
       )}
       <Card headerItems={[
@@ -160,36 +123,24 @@ const Device: React.FC = () => {
           ))}
         </Dropdown>
       ]}>
-        <Line
-          data={{
-            labels,
-            datasets,
-          }}
+        <Chart
           options={{
-            plugins: {
-              zoom: {
-                zoom: {
-                  wheel: {
-                    enabled: true,
-                  },
-                  pinch: {
-                    enabled: true
-                  },
-                  mode: 'xy',
-                }
-              }
+            chart: {
+              id: 'realtime',
+              height: 350,
+              type: 'area',
             },
-            animation: false,
-            scales: {
-              y: {
-                suggestedMin: 0,
-                suggestedMax: 100,
-              },
-              xAxes: {
-                display: false,
-              }
+            dataLabels: {
+              enabled: false
+            },
+            xaxis: {
+              type: 'datetime',
+              categories: labels,
             },
           }}
+          type='area'
+          series={series}
+          height={350}
         />
       </Card>
       <Row>

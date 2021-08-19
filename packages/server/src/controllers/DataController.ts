@@ -13,7 +13,7 @@ import { TypeORMService } from '@tsed/typeorm';
 
 class HomeResponse {
   name: string;
-  key: string;
+  publicKey: string;
   numRows: number;
   lastEntry: Date | undefined;
 }
@@ -44,7 +44,7 @@ export class DataController extends BaseController {
       .then(devices => Promise.all(devices.map(async device => {
         return {
           name: device.name,
-          key: device.publicKey,
+          publicKey: device.publicKey,
           numRows: await DataRow.count({ where: { device } }),
           lastEntry: (await DataRow.findOne({ where: { device }, order: { createdAt: 'DESC' } }))?.createdAt,
         }

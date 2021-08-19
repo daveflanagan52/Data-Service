@@ -1,7 +1,7 @@
 class Device {
   id: number;
   name: string;
-  key: string;
+  publicKey: string;
   createdAt: Date;
   rows?: DataRow[];
   numRows?: number;
