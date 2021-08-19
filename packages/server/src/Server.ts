@@ -41,7 +41,12 @@ export class Server {
 
   $beforeRoutesInit(): void {
     this.app
-      .use(cors())
+      .use(cors({
+        origin: '*',
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+        preflightContinue: true,
+        optionsSuccessStatus: 204
+      }))
       .use(cookieParser())
       .use(compress({}))
       .use(methodOverride())

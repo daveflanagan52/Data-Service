@@ -10,13 +10,14 @@ import './App.scss';
 
 import ScrollToTop from './Components/ScrollToTop';
 import Device from './Views/Device';
+import Container from './Components/Container';
 
 const App: React.FC = () => {
   return (
     <Provider store={store}>
       <Router>
         <ScrollToTop />
-        <nav className='navbar navbar-expand-lg navbar-dark bg-dark mb-5'>
+        <nav className='navbar navbar-expand-lg navbar-dark bg-dark mb-4'>
           <div className='container'>
             <span className='navbar-brand'>
               <FontAwesomeIcon className='me-2 text-primary' icon={faDatabase} />
@@ -24,11 +25,13 @@ const App: React.FC = () => {
             </span>
           </div>
         </nav>
-        <Switch>
-          <Route path='/:key'>
-            <Device />
-          </Route>
-        </Switch>
+        <Container>
+          <Switch>
+            <Route path='/:key'>
+              <Device />
+            </Route>
+          </Switch>
+        </Container>
       </Router>
     </Provider>
   );

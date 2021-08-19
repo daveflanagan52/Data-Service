@@ -5,6 +5,9 @@ export const dataApi = createApi({
   reducerPath: 'dataApi',
   baseQuery: fetchBaseQuery({ baseUrl: '/api/v1/' }),
   endpoints: (builder) => ({
+    getDevices: builder.query<Device, undefined>({
+      query: () => 'data',
+    }),
     getDevice: builder.query<Device, string>({
       query: (key: string) => 'data/' + key,
     }),

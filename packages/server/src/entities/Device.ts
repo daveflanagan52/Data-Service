@@ -14,7 +14,13 @@ export class Device extends BaseEntity {
   name: string;
 
   @Column()
-  key: string;
+  private: boolean;
+
+  @Column()
+  publicKey: string;
+
+  @Column()
+  privateKey: string;
 
   @Column({ type: 'timestamp', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

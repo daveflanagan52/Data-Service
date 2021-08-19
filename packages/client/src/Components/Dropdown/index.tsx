@@ -2,7 +2,7 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState, useEffect, ReactNode } from 'react';
 
-interface PopoverProps {
+interface DropdownProps {
   children: ReactNode | ReactNode[],
   text: ReactNode,
   label: string,
@@ -10,7 +10,7 @@ interface PopoverProps {
   popClassName?: string,
 };
 
-const Popover: React.FC<PopoverProps> = ({ children, text, label, className, popClassName }) => {
+const Dropdown: React.FC<DropdownProps> = ({ children, text, label, className, popClassName }) => {
   const [open, setOpen] = useState(false);
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -46,4 +46,4 @@ const Popover: React.FC<PopoverProps> = ({ children, text, label, className, pop
   );
 };
 
-export default Popover;
+export default Dropdown;

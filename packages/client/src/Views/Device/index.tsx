@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { Line } from 'react-chartjs-2';
 import moment from 'moment';
+import io from 'socket.io-client';
 import { faClock, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useGetDataQuery, useGetDeviceQuery } from '../../Services/Data';
 import DataCard from '../../Components/DataCard';
-import Popover from '../../Components/Dropdown';
+import Dropdown from '../../Components/Dropdown';
 import Loader from '../../Components/Loader';
 import Card from '../../Components/Card';
 import Alert, { AlertType } from '../../Components/Alert';
-import Container from '../../Components/Container';
 import Row from '../../Components/Row';
 import Column from '../../Components/Column';
 
@@ -73,6 +73,25 @@ const Device: React.FC = () => {
   const { data, isLoading } = useGetDataQuery({ key, period });
 
   useEffect(() => {
+    if (device.data) {
+      const socket = io('/device', {
+        path: '/api/v1/socket.io/device',
+        query: {
+          'key': device.data.publicKey,
+        }
+      });
+      socket.on('connect', () => {
+        console.log('connected to server');
+      });
+      socket.on('disconnect', data => {
+        console.log('disconnected');
+      });
+      socket.on('data', data => {
+      });
+    }
+  }, [device.data])
+
+  useEffect(() => {
     setLabels((data || []).map(row => moment(row.createdAt).format('llll')));
 
     const fomattedData = (data || []).map(row => {
@@ -121,74 +140,68 @@ const Device: React.FC = () => {
   }, [data, period]);
 
   if (!device.isLoading && !device.data) {
-    return (
-      <Container>
-        <Alert type={AlertType.Error} icon={faSearch} message='Device not found!' />
-      </Container>
-    );
+    return <Alert type={AlertType.Error} icon={faSearch} message='Device not found!' />;
   }
 
   return (
     <>
       <Loader show={isLoading || device.isLoading} />
-      <Container>
-        <Card headerItems={[
-          <h1 className='card-title flex-fill'>{device?.data?.name || (device?.isLoading ? 'Loading...' : 'Not Found')}</h1>,
-          <Popover label='Period' text={<><FontAwesomeIcon icon={faClock} className='me-2' />{period}</>}>
-            {periods.map(key => (
-              <li onClick={() => setPeriod(key)}>
-                <span className='dropdown-item text-capitalize'>{key}</span>
-              </li>
-            ))}
-          </Popover>
-        ]}>
-          {!isLoading && labels.length === 0 && (
-            <Alert type={AlertType.Warning} icon={faSearch} message='No data returned for selected period.' />
-          )}
-          <Line
-            data={{
-              labels,
-              datasets,
-            }}
-            options={{
-              plugins: {
+      <h1>{device?.data?.name || (device?.isLoading ? 'Loading...' : 'Not Found')}</h1>
+      {!isLoading && labels.length === 0 && (
+        <Alert type={AlertType.Warning} icon={faSearch} message='No data returned for the selected time period.' />
+      )}
+      <Card headerItems={[
+        <Dropdown popClassName='dropdown ms-auto' key='period' label='Period' text={<><FontAwesomeIcon icon={faClock} className='me-2' />{period}</>}>
+          {periods.map(key => (
+            <li key={key} onClick={() => setPeriod(key)}>
+              <button type='button' className='dropdown-item text-capitalize'>{key}</button>
+            </li>
+          ))}
+        </Dropdown>
+      ]}>
+        <Line
+          data={{
+            labels,
+            datasets,
+          }}
+          options={{
+            plugins: {
+              zoom: {
                 zoom: {
-                  zoom: {
-                    wheel: {
-                      enabled: true,
-                    },
-                    pinch: {
-                      enabled: true
-                    },
-                    mode: 'xy',
-                  }
+                  wheel: {
+                    enabled: true,
+                  },
+                  pinch: {
+                    enabled: true
+                  },
+                  mode: 'xy',
                 }
+              }
+            },
+            animation: false,
+            scales: {
+              y: {
+                suggestedMin: 0,
+                suggestedMax: 100,
               },
-              animation: false,
-              scales: {
-                y: {
-                  suggestedMin: 0,
-                  suggestedMax: 100,
-                },
-                xAxes: {
-                  display: false,
-                }
-              },
-            }}
-          />
-        </Card>
-        <Row>
-          <Column xs={12} md={4}>
-            <DataCard title='Lowest' data={minimums} />
-          </Column>
-          <Column xs={12} md={4}>
-            <DataCard title='Averages' data={averages} />
-          </Column>
-          <Column xs={12} md={4}>
-            <DataCard title='Highest' data={maximums} />
-          </Column>
-        </Row>
-      </Container>
+              xAxes: {
+                display: false,
+              }
+            },
+          }}
+        />
+      </Card>
+      <Row>
+        <Column xs={12} md={4}>
+          <DataCard title='Lowest' data={minimums} />
+        </Column>
+        <Column xs={12} md={4}>
+          <DataCard title='Averages' data={averages} />
+        </Column>
+        <Column xs={12} md={4}>
+          <DataCard title='Highest' data={maximums} />
+        </Column>
+      </Row>
     </>
   );
 }

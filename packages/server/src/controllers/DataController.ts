@@ -8,6 +8,8 @@ import { BaseController } from './BaseController';
 import { Device } from '../entities/Device';
 import { DataRow } from '../entities/DataRow';
 import { DataEntry } from '../entities/DataEntry';
+import { DeviceSocketService } from 'src/services/DeviceSocketService';
+import { TypeORMService } from '@tsed/typeorm';
 
 class Response {
   error?: string;
@@ -20,11 +22,25 @@ interface BodyParam {
 
 @Controller('/data')
 export class DataController extends BaseController {
+  protected deviceSocketService: DeviceSocketService;
+
+  constructor(typeORMService: TypeORMService, deviceSocketService: DeviceSocketService) {
+    super(typeORMService)
+    this.deviceSocketService = deviceSocketService;
+  }
+
+  @Get('/')
+  @ContentType('application/json')
+  @Returns(200, Array).Of(Device)
+  find(): Promise<Device[] | Response> {
+    return Device.find({ select: ['name', 'publicKey'], where: { private: false } });
+  }
+
   @Get('/:key')
   @ContentType('application/json')
   @Returns(200, Device)
   findDevice(@PathParams('key') key: string): Promise<Device | Response> {
-    return Device.findOneOrFail(undefined, { where: { key } })
+    return Device.findOneOrFail(undefined, { select: ['name', 'publicKey'], where: { publicKey: key } })
       .catch(() => { throw new NotFound('Device not found') });
   }
 
@@ -32,14 +48,14 @@ export class DataController extends BaseController {
   @ContentType('application/json')
   @Returns(200, Device)
   getData(@PathParams('key') key: string, @PathParams('period') period: string): Promise<DataRow[] | Response | undefined> {
-    return Device.findOneOrFail(undefined, { where: { key } })
+    return Device.findOneOrFail(undefined, { where: { publicKey: key } })
       .catch(() => { throw new NotFound('Device not found') })
       .then(device => {
         if (period === 'all') {
-          return DataRow.find({ where: { device }, relations: ['entries'], order: { createdAt: 'ASC' } });
+          return DataRow.find({ select: ['createdAt', 'entries'], where: { device }, relations: ['entries'], order: { createdAt: 'ASC' } });
         } else {
           const date = moment().subtract(1, period as DurationInputArg2).toDate();
-          return DataRow.find({ where: { device, createdAt: Between(date, new Date()) }, relations: ['entries'], order: { createdAt: 'ASC' } });
+          return DataRow.find({ select: ['createdAt', 'entries'], where: { device, createdAt: Between(date, new Date()) }, relations: ['entries'], order: { createdAt: 'ASC' } });
         }
       })
       .then(rows => rows.filter(row => (row.entries || []).length > 0));
@@ -49,7 +65,7 @@ export class DataController extends BaseController {
   @ContentType('application/json')
   @Returns(200, Response)
   insert(@PathParams('key') key: string, @BodyParams() data: BodyParam): Promise<Response> {
-    return Device.findOneOrFail(undefined, { where: { key } })
+    return Device.findOneOrFail(undefined, { where: { privateKey: key } })
       .catch(() => { throw new NotFound('Device not found') })
       .then((device: Device) => {
         if (!data || Object.keys(data || []).length === 0) {
@@ -58,14 +74,18 @@ export class DataController extends BaseController {
         const row: DataRow = new DataRow();
         row.device = device;
         return row.save().then(row => {
-          Object.keys(data || []).forEach(key => {
+          return Promise.all(Object.keys(data || []).map(key => {
             const entry: DataEntry = new DataEntry();
             entry.key = key;
-            entry.value = data[key] || 0;
+            entry.value = data[key];
             entry.dataRow = row;
-            entry.save();
+            return entry.save();
+          })).then(() => {
+            return DataRow.findOne(undefined, { where: { id: row.id }, relations: ['entries'] })
+          }).then((row: DataRow) => {
+            this.deviceSocketService.updateData(device, row);
+            return { success: true };
           });
-          return { success: true };
         });
       });
   }
