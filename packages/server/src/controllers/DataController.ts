@@ -8,8 +8,15 @@ import { BaseController } from './BaseController';
 import { Device } from '../entities/Device';
 import { DataRow } from '../entities/DataRow';
 import { DataEntry } from '../entities/DataEntry';
-import { DeviceSocketService } from 'src/services/DeviceSocketService';
+import { DeviceSocketService } from '../services/DeviceSocketService';
 import { TypeORMService } from '@tsed/typeorm';
+
+class HomeResponse {
+  name: string;
+  key: string;
+  numRows: number;
+  lastEntry: Date | undefined;
+}
 
 class Response {
   error?: string;
@@ -31,9 +38,17 @@ export class DataController extends BaseController {
 
   @Get('/')
   @ContentType('application/json')
-  @Returns(200, Array).Of(Device)
-  find(): Promise<Device[] | Response> {
-    return Device.find({ select: ['name', 'publicKey'], where: { private: false } });
+  @Returns(200, Array).Of(HomeResponse)
+  find(): Promise<HomeResponse[] | Response> {
+    return Device.find({ where: { private: false } })
+      .then(devices => Promise.all(devices.map(async device => {
+        return {
+          name: device.name,
+          key: device.publicKey,
+          numRows: await DataRow.count({ where: { device } }),
+          lastEntry: (await DataRow.findOne({ where: { device }, order: { createdAt: 'DESC' } }))?.createdAt,
+        }
+      })));
   }
 
   @Get('/:key')

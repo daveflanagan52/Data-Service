@@ -6,7 +6,7 @@
   "username": "",
   "password": "",
   "database": "",
-  "synchronize": true,
+  "synchronize": false,
   "logging": false,
   "entities": [
     "${rootDir}/entities/**/*.{js,ts}"

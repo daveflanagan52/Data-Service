@@ -1,9 +1,11 @@
 class Device {
   id: number;
   name: string;
-  publicKey: string;
+  key: string;
   createdAt: Date;
   rows?: DataRow[];
+  numRows?: number;
+  lastEntry?: Date;
 };
 
 class DataRow {

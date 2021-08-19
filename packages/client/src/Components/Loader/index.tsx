@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 interface LoaderProps {
   show: boolean,
 };

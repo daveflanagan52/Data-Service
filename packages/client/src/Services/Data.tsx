@@ -5,7 +5,7 @@ export const dataApi = createApi({
   reducerPath: 'dataApi',
   baseQuery: fetchBaseQuery({ baseUrl: '/api/v1/' }),
   endpoints: (builder) => ({
-    getDevices: builder.query<Device, undefined>({
+    getDevices: builder.query<Device[], undefined>({
       query: () => 'data',
     }),
     getDevice: builder.query<Device, string>({
@@ -17,4 +17,4 @@ export const dataApi = createApi({
   }),
 })
 
-export const { useGetDeviceQuery, useGetDataQuery } = dataApi;
+export const { useGetDevicesQuery, useGetDeviceQuery, useGetDataQuery } = dataApi;

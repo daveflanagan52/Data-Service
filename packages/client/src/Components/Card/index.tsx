@@ -12,7 +12,7 @@ const Card: React.FC<CardProps> = (props: CardProps) => {
   return (
     <div className='card mb-4'>
       {props.headerItems && (
-        <div className='card-header bg-dark text-white d-flex'>
+        <div className='card-header align-items-center bg-dark text-light'>
           {props.headerItems}
         </div>
       )}

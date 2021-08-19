@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router';
-import { Line } from 'react-chartjs-2';
 import moment from 'moment';
 import io from 'socket.io-client';
+import { useParams } from 'react-router';
+import { Line } from 'react-chartjs-2';
 import { faClock, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { useGetDataQuery, useGetDeviceQuery } from '../../Services/Data';
+import Alert, { AlertType } from '../../Components/Alert';
+import Card from '../../Components/Card';
+import Column from '../../Components/Column';
 import DataCard from '../../Components/DataCard';
 import Dropdown from '../../Components/Dropdown';
 import Loader from '../../Components/Loader';
-import Card from '../../Components/Card';
-import Alert, { AlertType } from '../../Components/Alert';
 import Row from '../../Components/Row';
-import Column from '../../Components/Column';
+
+import { useGetDataQuery, useGetDeviceQuery } from '../../Services/Data';
 
 import { Chart } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
@@ -77,7 +78,7 @@ const Device: React.FC = () => {
       const socket = io('/device', {
         path: '/api/v1/socket.io/device',
         query: {
-          'key': device.data.publicKey,
+          'key': device.data.key,
         }
       });
       socket.on('connect', () => {
@@ -117,12 +118,12 @@ const Device: React.FC = () => {
           _datasets[key] = {
             label: key,
             data: fomattedData,
-            fill: true,
+            fill: false,
             tension: 0.1,
             order: 100 - colorIndex,
             pointRadius: 1,
             borderWidth: 3,
-            backgroundColor: 'rgba(' + colors[colorIndex] + ', 0.3)',
+            backgroundColor: 'rgba(' + colors[colorIndex] + ', 1)',
             borderColor: 'rgba(' + colors[colorIndex] + ', 1)',
             parsing: {
               yAxisKey: key
