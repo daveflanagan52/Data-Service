@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import Chart from 'react-apexcharts';
 import { useParams } from 'react-router';
+import { Helmet } from 'react-helmet'
 import { faClock, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -84,6 +85,9 @@ const Device: React.FC = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Data Service | {device?.data?.name || (device?.isLoading ? 'Loading...' : 'Not Found')}</title>
+      </Helmet>
       <Loader show={isLoading || device.isLoading} />
       <h1 className='mb-4'>{device?.data?.name || (device?.isLoading ? 'Loading...' : 'Not Found')}</h1>
       {!isLoading && series.length === 0 && (

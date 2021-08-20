@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { Helmet } from 'react-helmet'
 
 import Alert, { AlertType } from '../../Components/Alert';
 import Button, { ButtonType } from '../../Components/Button';
@@ -16,9 +17,12 @@ import { Device as DeviceType } from '../../Types';
 const Home: React.FC = () => {
   const { data, isLoading, isError } = useGetDevicesQuery(undefined);
   const [createOpen, setCreateOpen] = useState(false);
-  const [ addDevice, { isLoading: isUpdating }] = useAddDeviceMutation()
+  const [addDevice, { isLoading: isUpdating }] = useAddDeviceMutation()
   return (
     <>
+      <Helmet>
+        <title>Data Service | Home</title>
+      </Helmet>
       <Loader show={isLoading || isUpdating} />
       <div className='d-flex align-items-center mb-4'>
         <h1 className='flex-fill mb-0'> Devices</h1>
@@ -45,7 +49,7 @@ const Home: React.FC = () => {
       <CreateDeviceForm
         open={createOpen}
         close={() => setCreateOpen(false)}
-        onSubmit={(payload: CreateDeviceFormValues) => addDevice({name: payload.name, private: payload.private})}
+        onSubmit={(payload: CreateDeviceFormValues) => addDevice({ name: payload.name, private: payload.private })}
       />
     </>
   );
