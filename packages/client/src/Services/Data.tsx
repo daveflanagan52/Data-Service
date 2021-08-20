@@ -10,6 +10,15 @@ export const dataApi = createApi({
     getDevices: builder.query<Device[], undefined>({
       query: () => 'data',
     }),
+    addDevice: builder.mutation<Device, Partial<Device>>({
+      query(body) {
+        return {
+          url: `data`,
+          method: 'POST',
+          body,
+        }
+      },
+    }),
     getDevice: builder.query<Device, string>({
       query: (key: string) => 'data/' + key,
     }),
@@ -40,4 +49,4 @@ export const dataApi = createApi({
   }),
 });
 
-export const { useGetDevicesQuery, useGetDeviceQuery, useUpdateDataQuery } = dataApi;
+export const { useGetDevicesQuery, useGetDeviceQuery, useUpdateDataQuery, useAddDeviceMutation } = dataApi;

@@ -2,6 +2,8 @@ class Device {
   id: number;
   name: string;
   publicKey: string;
+  privateKey?: string;
+  private?: boolean;
   createdAt: Date;
   rows?: DataRow[];
   numRows?: number;

@@ -85,7 +85,7 @@ const Device: React.FC = () => {
   return (
     <>
       <Loader show={isLoading || device.isLoading} />
-      <h1>{device?.data?.name || (device?.isLoading ? 'Loading...' : 'Not Found')}</h1>
+      <h1 className='mb-4'>{device?.data?.name || (device?.isLoading ? 'Loading...' : 'Not Found')}</h1>
       {!isLoading && series.length === 0 && (
         <Alert type={AlertType.Warning} icon={faSearch} message='No data returned for the selected time period.' />
       )}

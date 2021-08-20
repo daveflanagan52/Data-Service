@@ -1,4 +1,13 @@
-@import "Variables";
+$body-bg: #f1f5f9;
+$body-color: #1d212f;
+$primary: #f4c141;
+$dark: #1a202e;
+$font-family-base: 'Roboto', sans-serif !important;
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+);
 @import "~bootstrap/scss/bootstrap";
 @import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Nothing+You+Could+Do&family=Roboto:wght@400;500;700&display=swap");
 
@@ -17,11 +26,25 @@
   left: 0;
   bottom: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 1100;
 
   .spinner-border {
     width: 3rem;
     height: 3rem;
+  }
+}
+
+.form-check.form-switch {
+  &.form-switch-lg {
+    display: flex !important;
+    align-items: center !important;
+
+    .form-check-input {
+      width: 4em;
+      height: 2em;
+      margin-top: 0;
+      margin-right: 0.5rem;
+    }
   }
 }
 
@@ -34,6 +57,10 @@
 
   .btn-close {
     background: none;
+  }
+
+  .modal-dialog {
+    max-width: 700px;
   }
 }
 

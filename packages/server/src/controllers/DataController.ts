@@ -3,6 +3,7 @@ import { Returns, ContentType } from '@tsed/schema';
 import { BadRequest, NotFound } from '@tsed/exceptions';
 import { Between } from 'typeorm';
 import moment, { DurationInputArg2 } from 'moment';
+import { v4 as uuidv4 } from 'uuid';
 
 import { BaseController } from './BaseController';
 import { Device } from '../entities/Device';
@@ -49,6 +50,22 @@ export class DataController extends BaseController {
           lastEntry: (await DataRow.findOne({ where: { device }, order: { createdAt: 'DESC' } }))?.createdAt,
         }
       })));
+  }
+
+  @Post('/')
+  @ContentType('application/json')
+  @Returns(200, Device)
+  createDevice(@BodyParams('name') name?: string, @BodyParams('private') isPrivate?: boolean): Promise<Device> {
+    if (!name) {
+      throw new BadRequest('No name specified name');
+    }
+    const device = Device.create({
+      name: name,
+      private: isPrivate,
+      publicKey: uuidv4(),
+      privateKey: uuidv4(),
+    });
+    return device.save();
   }
 
   @Get('/:key')
