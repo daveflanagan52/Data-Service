@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
-import io from 'socket.io-client';
 import Chart from 'react-apexcharts';
 import { useParams } from 'react-router';
 import { faClock, faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -14,7 +13,7 @@ import Dropdown from '../../Components/Dropdown';
 import Loader from '../../Components/Loader';
 import Row from '../../Components/Row';
 
-import { useGetDataQuery, useGetDeviceQuery } from '../../Services/Data';
+import { useGetDeviceQuery, useUpdateDataQuery } from '../../Services/Data';
 import { DataRow } from '../../Types';
 
 interface Dataset {
@@ -52,31 +51,7 @@ const Device: React.FC = () => {
   const [period, setPeriod] = useState('week');
 
   const device = useGetDeviceQuery(key);
-  const { data, isLoading } = useGetDataQuery({ key, period });
-
-  useEffect(() => {
-    if (device.data) {
-      const socket = io('/device', {
-        path: '/api/v1/socket.io/device',
-        query: {
-          'key': device.data.publicKey,
-        }
-      });
-      socket.on('connect', () => {
-        console.log('connected to server');
-      });
-      socket.on('disconnect', data => {
-        console.log('disconnected');
-      });
-      socket.on('data', (data: DataRow) => {
-        data.entries.forEach(entry => {
-          ApexCharts.exec('realtime', entry.key, [{
-            data: entry.value,
-          }]);
-        });
-      });
-    }
-  }, [device.data])
+  const { data, isLoading } = useUpdateDataQuery({ key, period })
 
   useEffect(() => {
     setLabels((data || []).reduce((p, v) => [...p, moment(v.createdAt).format('llll')], []));

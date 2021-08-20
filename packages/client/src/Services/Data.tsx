@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { Device, DataRow } from '../Types';
+import io from 'socket.io-client';
+import moment, { DurationInputArg2 } from 'moment';
 
 export const dataApi = createApi({
   reducerPath: 'dataApi',
@@ -11,10 +13,31 @@ export const dataApi = createApi({
     getDevice: builder.query<Device, string>({
       query: (key: string) => 'data/' + key,
     }),
-    getData: builder.query<DataRow[], { key: string, period: string }>({
+    updateData: builder.query<DataRow[], { key: string, period: string }>({
       query: ({ key, period }) => 'data/' + key + '/' + period,
+      async onCacheEntryAdded(
+        arg,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) {
+        const socket = io('/device', {
+          path: '/api/v1/socket.io/device',
+          query: {
+            'key': arg.key,
+          }
+        });
+        socket.on('data', (data: DataRow) => {
+          const date = moment().subtract(1, arg.period as DurationInputArg2);
+          updateCachedData((draft) => {
+            draft = draft.filter(x => date.isSameOrBefore(x.createdAt));
+            draft.push(data);
+            return draft;
+          })
+        });
+        await cacheEntryRemoved
+        socket.close();
+      },
     }),
   }),
-})
+});
 
-export const { useGetDevicesQuery, useGetDeviceQuery, useGetDataQuery } = dataApi;
+export const { useGetDevicesQuery, useGetDeviceQuery, useUpdateDataQuery } = dataApi;
