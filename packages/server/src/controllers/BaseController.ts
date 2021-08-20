@@ -1,10 +1,11 @@
-import { AfterRoutesInit, Controller } from "@tsed/common";
-import { TypeORMService } from "@tsed/typeorm";
-import { Connection } from "typeorm";
+import { AfterRoutesInit, Controller } from '@tsed/common';
+import { TypeORMService } from '@tsed/typeorm';
+import { Connection } from 'typeorm';
 
-@Controller("/base")
+@Controller('/base')
 export class BaseController implements AfterRoutesInit {
   protected connection: Connection;
+
   protected typeORMService: TypeORMService;
 
   constructor(typeORMService: TypeORMService) {
@@ -12,6 +13,6 @@ export class BaseController implements AfterRoutesInit {
   }
 
   $afterRoutesInit() {
-    this.connection = this.typeORMService?.get("default")!;
+    this.connection = this.typeORMService?.get('default')!;
   }
 }

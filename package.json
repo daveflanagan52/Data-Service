@@ -13,14 +13,10 @@
     ]
   },
   "scripts": {
+    "eslint-fix": "lerna run eslint-fix",
+    "start": "lerna run start",
     "build": "lerna run build",
-    "build:client": "lerna run build:client && docker-compose build client",
-    "build:server": "lerna run build:server && docker-compose build server",
-    "docker:build": "docker-compose build",
-    "docker:build:db": "yarn docker:build db",
-    "docker:up": "docker-compose up",
-    "docker:up:db": "docker-compose up db",
-    "docker:down": "docker-compose down"
+    "containerize": "lerna run containerize"
   },
   "dependencies": {
     "lerna": "^4.0.0"

@@ -19,17 +19,17 @@ import { config, rootDir } from './config';
   httpsPort: false, // CHANGE
   mount: {
     '/': [
-      `${rootDir}/controllers/**/*.ts`
-    ]
+      `${rootDir}/controllers/**/*.ts`,
+    ],
   },
   swagger: [
     {
       path: '/docs',
-      specVersion: '3.0.1'
-    }
+      specVersion: '3.0.1',
+    },
   ],
   exclude: [
-    '**/*.spec.ts'
+    '**/*.spec.ts',
   ],
 })
 export class Server {
@@ -45,14 +45,14 @@ export class Server {
         origin: '*',
         methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
         preflightContinue: true,
-        optionsSuccessStatus: 204
+        optionsSuccessStatus: 204,
       }))
       .use(cookieParser())
       .use(compress({}))
       .use(methodOverride())
       .use(bodyParser.json())
       .use(bodyParser.urlencoded({
-        extended: true
+        extended: true,
       }));
   }
 }

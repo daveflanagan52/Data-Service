@@ -13,7 +13,9 @@ type FormikFormInputProps = {
   type: FormInputType,
 };
 
-const FormikFormInput: React.FC<FormikPartProps & FormikFormInputProps> = ({ id, name, type, formik }) => (
+const FormikFormInput: React.FC<FormikPartProps & FormikFormInputProps> = ({
+  id, name, type, formik,
+}) => (
   <FormInput
     id={id}
     type={type}

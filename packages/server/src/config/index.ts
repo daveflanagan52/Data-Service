@@ -1,9 +1,10 @@
-import { join } from "path";
-import { loggerConfig } from "./logger";
-import typeormConfig from "./typeorm";
+import { join } from 'path';
+import { loggerConfig } from './logger';
+import typeormConfig from './typeorm';
 
-const { version } = require("../../package.json");
-export const rootDir = join(__dirname, "..");
+const { version } = require('../../package.json');
+
+export const rootDir = join(__dirname, '..');
 
 export const config: Partial<TsED.Configuration> = {
   version,

@@ -13,7 +13,9 @@ type FormikFormCheckSwitchProps = {
   value: any,
 };
 
-const FormikFormCheckSwitch: React.FC<FormikPartProps & FormikFormCheckSwitchProps> = ({ id, name, text, value, formik }) => (
+const FormikFormCheckSwitch: React.FC<FormikPartProps & FormikFormCheckSwitchProps> = ({
+  id, name, text, value, formik,
+}) => (
   <FormCheckSwitch
     text={text}
     id={id}

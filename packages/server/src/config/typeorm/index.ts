@@ -1,5 +1,5 @@
 // @tsed/cli do not edit
-import * as defaultConfig from "./default.config.json";
+import * as defaultConfig from './default.config.json';
 
 export default [
   {
@@ -10,5 +10,5 @@ export default [
     database: process.env.TYPEORM_DATABASE || 'basedb',
     port: process.env.TYPEORM_PORT || 5431,
     type: process.env.TYPEORM_CONNECTION || 'postgres',
-  } as any
+  } as any,
 ];

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import Chart from 'react-apexcharts';
 import { useParams } from 'react-router';
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet';
 import { faClock, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -20,7 +20,7 @@ import { DataRow } from '../../Types';
 interface Dataset {
   name: string,
   data: KeyNumberStringList[],
-};
+}
 
 interface KeyNumberStringList {
   [key: string]: number | string,
@@ -52,7 +52,7 @@ const Device: React.FC = () => {
   const [period, setPeriod] = useState('hour');
 
   const device = useGetDeviceQuery(key);
-  const { data, isLoading } = useUpdateDataQuery({ key, period })
+  const { data, isLoading } = useUpdateDataQuery({ key, period });
 
   useEffect(() => {
     setLabels((data || []).reduce((p, v) => [...p, moment(v.createdAt).format('llll')], []));
@@ -61,12 +61,12 @@ const Device: React.FC = () => {
     const _maximums: KeyNumberList = {};
     const _averages: KeyNumberList = {};
 
-    const keys = (data || []).reduce((keys, row) => row.entries.reduce((previous, entry) => previous.includes(entry.key) ? previous : [...previous, entry.key], keys), []);
-    keys.forEach(key => {
-      const filtered = ((data || []) as DataRow[]).reduce((previous, row) => [...previous, [moment(row.createdAt).valueOf(), row.entries.filter(x => x.key === key).pop()?.value || 0]], []);
+    const keys = (data || []).reduce((keys, row) => row.entries.reduce((previous, entry) => (previous.includes(entry.key) ? previous : [...previous, entry.key]), keys), []);
+    keys.forEach((key) => {
+      const filtered = ((data || []) as DataRow[]).reduce((previous, row) => [...previous, [moment(row.createdAt).valueOf(), row.entries.filter((x) => x.key === key).pop()?.value || 0]], []);
       _averages[key] = filtered.reduce((p, v) => p + v[1], 0) / filtered.length;
-      _minimums[key] = filtered.reduce((p, v) => p < v[1] ? p : v[1], Number.MAX_VALUE);
-      _maximums[key] = filtered.reduce((p, v) => p > v[1] ? p : v[1], Number.MIN_VALUE);
+      _minimums[key] = filtered.reduce((p, v) => (p < v[1] ? p : v[1]), Number.MAX_VALUE);
+      _maximums[key] = filtered.reduce((p, v) => (p > v[1] ? p : v[1]), Number.MIN_VALUE);
       _series.push({
         name: key,
         data: filtered,
@@ -80,28 +80,42 @@ const Device: React.FC = () => {
   }, [data, period]);
 
   if (!device.isLoading && !device.data) {
-    return <Alert type={AlertType.Error} icon={faSearch} message='Device not found!' />;
+    return <Alert type={AlertType.Error} icon={faSearch} message="Device not found!" />;
   }
 
   return (
     <>
       <Helmet>
-        <title>Data Service | {device?.data?.name || (device?.isLoading ? 'Loading...' : 'Not Found')}</title>
+        <title>
+          Data Service |
+          {device?.data?.name || (device?.isLoading ? 'Loading...' : 'Not Found')}
+        </title>
       </Helmet>
       <Loader show={isLoading || device.isLoading} />
-      <h1 className='mb-4'>{device?.data?.name || (device?.isLoading ? 'Loading...' : 'Not Found')}</h1>
+      <h1 className="mb-4">{device?.data?.name || (device?.isLoading ? 'Loading...' : 'Not Found')}</h1>
       {!isLoading && series.length === 0 && (
-        <Alert type={AlertType.Warning} icon={faSearch} message='No data returned for the selected time period.' />
+        <Alert type={AlertType.Warning} icon={faSearch} message="No data returned for the selected time period." />
       )}
       <Card headerItems={[
-        <Dropdown popClassName='dropdown ms-auto' key='period' label='Period' text={<><FontAwesomeIcon icon={faClock} className='me-2' />{period}</>}>
-          {periods.map(key => (
+        <Dropdown
+          popClassName="dropdown ms-auto"
+          key="period"
+          label="Period"
+          text={(
+            <>
+              <FontAwesomeIcon icon={faClock} className="me-2" />
+              {period}
+            </>
+)}
+        >
+          {periods.map((key) => (
             <li key={key} onClick={() => setPeriod(key)}>
-              <button type='button' className='dropdown-item text-capitalize'>{key}</button>
+              <button type="button" className="dropdown-item text-capitalize">{key}</button>
             </li>
           ))}
-        </Dropdown>
-      ]}>
+        </Dropdown>,
+      ]}
+      >
         <Chart
           options={{
             chart: {
@@ -110,27 +124,27 @@ const Device: React.FC = () => {
               type: 'area',
             },
             dataLabels: {
-              enabled: false
+              enabled: false,
             },
             xaxis: {
               type: 'datetime',
               categories: labels,
             },
           }}
-          type='area'
+          type="area"
           series={series}
           height={450}
         />
       </Card>
       <Row>
         <Column xs={12} md={4}>
-          <DataCard title='Lowest' data={minimums} />
+          <DataCard title="Lowest" data={minimums} />
         </Column>
         <Column xs={12} md={4}>
-          <DataCard title='Average' data={averages} />
+          <DataCard title="Average" data={averages} />
         </Column>
         <Column xs={12} md={4}>
-          <DataCard title='Highest' data={maximums} />
+          <DataCard title="Highest" data={maximums} />
         </Column>
       </Row>
     </>

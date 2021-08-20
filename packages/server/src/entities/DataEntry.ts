@@ -1,10 +1,12 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
+import {
+  Column, Entity, ManyToOne, PrimaryGeneratedColumn, BaseEntity,
+} from 'typeorm';
 import { DataRow } from './DataRow';
 
 @Entity({
   orderBy: {
-    createdAt: 'DESC'
-  }
+    createdAt: 'DESC',
+  },
 })
 export class DataEntry extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -19,6 +21,6 @@ export class DataEntry extends BaseEntity {
   @Column({ type: 'timestamp', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @ManyToOne(() => DataRow, dataRow => dataRow.entries)
+  @ManyToOne(() => DataRow, (dataRow) => dataRow.entries)
   dataRow?: DataRow;
 }

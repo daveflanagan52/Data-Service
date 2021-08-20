@@ -8,38 +8,40 @@ interface DropdownProps {
   label: string,
   className?: string,
   popClassName?: string,
-};
+}
 
-const Dropdown: React.FC<DropdownProps> = ({ children, text, label, className, popClassName }) => {
+const Dropdown: React.FC<DropdownProps> = ({
+  children, text, label, className, popClassName,
+}) => {
   const [open, setOpen] = useState(false);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (open) {
       setTimeout(() => setOpen(false), 200);
     }
-  }
+  };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   return (
     <div className={popClassName || 'dropdown'} onClick={() => setOpen(!open)}>
       <button
-        type='button'
+        type="button"
         className={className || 'btn btn-primary py-0 text-capitalize'}
-        role='button'
+        role="button"
         aria-label={label}
         aria-expanded={open}
       >
         {text}
-        <FontAwesomeIcon icon={faCaretDown} className='ms-2' />
+        <FontAwesomeIcon icon={faCaretDown} className="ms-2" />
       </button>
 
-      <ul className={'dropdown-menu dropdown-menu-end py-0' + (open ? ' show' : '')}>
+      <ul className={`dropdown-menu dropdown-menu-end py-0${open ? ' show' : ''}`}>
         {children}
       </ul>
     </div>

@@ -4,12 +4,10 @@ type InputGroupProps = {
   children?: ReactNode | ReactNode[],
 }
 
-const InputGroup: React.FC<InputGroupProps> = (props: InputGroupProps) => {
-  return (
-    <div className='input-group'>
-      {props.children}
-    </div>
-  );
-}
+const InputGroup: React.FC<InputGroupProps> = (props: InputGroupProps) => (
+  <div className="input-group">
+    {props.children}
+  </div>
+);
 
 export default InputGroup;

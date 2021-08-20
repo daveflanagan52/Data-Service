@@ -1,10 +1,12 @@
-import { Column, Entity, OneToMany,  PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
+import {
+  Column, Entity, OneToMany, PrimaryGeneratedColumn, BaseEntity,
+} from 'typeorm';
 import { DataRow } from './DataRow';
 
 @Entity({
   orderBy: {
-    createdAt: 'ASC'
-  }
+    createdAt: 'ASC',
+  },
 })
 export class Device extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -25,6 +27,6 @@ export class Device extends BaseEntity {
   @Column({ type: 'timestamp', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @OneToMany(() => DataRow, dataRow => dataRow.device)
+  @OneToMany(() => DataRow, (dataRow) => dataRow.device)
   rows?: DataRow[];
 }

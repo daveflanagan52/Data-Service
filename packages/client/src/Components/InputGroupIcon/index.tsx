@@ -6,12 +6,10 @@ type InputGroupIconProps = {
   icon: IconProp,
 }
 
-const InputGroup: React.FC<InputGroupIconProps> = (props: InputGroupIconProps) => {
-  return (
-    <span className='input-group-text'>
-      <FontAwesomeIcon icon={props.icon} />
-    </span>
-  );
-}
+const InputGroup: React.FC<InputGroupIconProps> = (props: InputGroupIconProps) => (
+  <span className="input-group-text">
+    <FontAwesomeIcon icon={props.icon} />
+  </span>
+);
 
 export default InputGroup;

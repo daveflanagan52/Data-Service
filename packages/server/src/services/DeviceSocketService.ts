@@ -1,4 +1,6 @@
-import { IO, Nsp, Socket, SocketService, SocketSession, Input, Namespace, Args } from '@tsed/socketio';
+import {
+  IO, Nsp, Socket, SocketService, SocketSession,
+} from '@tsed/socketio';
 import * as SocketIO from 'socket.io';
 
 import { DataRow } from '../entities/DataRow';
@@ -6,8 +8,8 @@ import { Device } from '../entities/Device';
 
 @SocketService('/device')
 export class DeviceSocketService {
-
   @Nsp nsp: SocketIO.Namespace;
+
   public clients: Map<string, SocketIO.Socket[]> = new Map();
 
   constructor(@IO private io: SocketIO.Server) { }
@@ -31,7 +33,7 @@ export class DeviceSocketService {
 
   updateData(device: Device, row: DataRow) {
     const clients = this.clients.get(device.publicKey);
-    (clients || []).filter(c => c.connected).forEach(client => {
+    (clients || []).filter((c) => c.connected).forEach((client) => {
       client.emit('data', row);
     });
   }

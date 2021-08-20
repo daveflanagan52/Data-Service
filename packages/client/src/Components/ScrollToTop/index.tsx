@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { useEffect } from 'react';
 
 interface ScrollToTopProps extends RouteComponentProps<any> { }
 
@@ -11,10 +10,10 @@ const ScrollToTop: React.FC<ScrollToTopProps> = ({ history }: ScrollToTopProps) 
     });
     return () => {
       unlisten();
-    }
+    };
   }, []);
 
   return null;
-}
+};
 
 export default withRouter(ScrollToTop);

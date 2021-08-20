@@ -1,4 +1,4 @@
 export default {
-    path: '/socket.io',
-    serveClient: false,
+  path: '/socket.io',
+  serveClient: false,
 };
