@@ -48,7 +48,7 @@ const Device: React.FC = () => {
   const [maximums, setMaximums] = useState({});
   const [averages, setAverages] = useState({});
   const [series, setSeries] = useState([]);
-  const [period, setPeriod] = useState('week');
+  const [period, setPeriod] = useState('hour');
 
   const device = useGetDeviceQuery(key);
   const { data, isLoading } = useUpdateDataQuery({ key, period })
@@ -131,6 +131,6 @@ const Device: React.FC = () => {
       </Row>
     </>
   );
-}
+};
 
 export default Device;

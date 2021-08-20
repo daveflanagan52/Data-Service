@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Formik, Form, FormikHelpers } from 'formik';
-import * as yup from 'yup';
 import { faCheck, faQuestion, faSave, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 import Button, { ButtonType } from '../../Components/Button';
