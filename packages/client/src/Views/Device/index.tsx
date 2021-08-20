@@ -75,7 +75,7 @@ const Device: React.FC = () => {
     setAverages(_averages);
     setMinimums(_minimums);
     setMaximums(_maximums);
-    setSeries(_series);
+    setSeries(_series.sort((a, b) => a.name.localeCompare(b.name)));
   }, [data, period]);
 
   if (!device.isLoading && !device.data) {
@@ -102,7 +102,7 @@ const Device: React.FC = () => {
           options={{
             chart: {
               id: 'realtime',
-              height: 350,
+              height: 450,
               type: 'area',
             },
             dataLabels: {
@@ -115,7 +115,7 @@ const Device: React.FC = () => {
           }}
           type='area'
           series={series}
-          height={350}
+          height={450}
         />
       </Card>
       <Row>
@@ -123,7 +123,7 @@ const Device: React.FC = () => {
           <DataCard title='Lowest' data={minimums} />
         </Column>
         <Column xs={12} md={4}>
-          <DataCard title='Averages' data={averages} />
+          <DataCard title='Average' data={averages} />
         </Column>
         <Column xs={12} md={4}>
           <DataCard title='Highest' data={maximums} />

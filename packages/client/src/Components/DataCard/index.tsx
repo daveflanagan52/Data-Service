@@ -24,7 +24,7 @@ const DataCard: React.FC<DataCardProps> = (props: DataCardProps) => {
         bodyClassName='card-body py-0'
       >
         <ul className='list-group list-group-flush'>
-          {Object.keys(props.data).map(key => (
+          {Object.keys(props.data).sort((a, b) => a.localeCompare(b)).map(key => (
             <li key={key} className='px-0 list-group-item d-flex justify-content-between'>
               <span className='text-capitalize'>{key}</span>
               <span>{typeof props.data[key] == 'number' ? (props.data[key] as number).toFixed(3) : props.data[key]}</span>
