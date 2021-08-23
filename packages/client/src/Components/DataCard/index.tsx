@@ -18,7 +18,7 @@ const DataCard: React.FC<DataCardProps> = (props: DataCardProps) => {
       <Card
         footerItems={props.footerItems}
         headerItems={[
-          <h1 key="title" className="card-title flex-fill">{props.title}</h1>,
+          <h6 key="title" className="card-title flex-fill">{props.title}</h6>,
           ...(props.headerItems || []),
         ]}
         bodyClassName="card-body py-0"

@@ -122,7 +122,7 @@ const CreateDeviceForm: React.FC<CreateDeviceFormProps> = ({ open, close, onSubm
             open={open}
             close={close}
             footerItems={[
-              <Button key="cancel" type={ButtonType.Secondary} icon={faTimes} text="Cancel" onClick={() => close()} />,
+              <Button key="cancel" type={ButtonType.Dark} icon={faTimes} text="Cancel" onClick={() => close()} />,
               <Button key="submit" type={ButtonType.Primary} icon={faSave} text="Submit" />,
             ]}
           >

@@ -20,7 +20,7 @@
     "start": "tsnd --inspect --ignore-watch node_modules --respawn --transpile-only -r tsconfig-paths/register src/index.ts",
     "start:prod": "cross-env NODE_ENV=production node dist/index.js",
     "build": "yarn run tsc",
-    "containerize": "yarn build && docker build -t daveflanagan/data-server . && docker push daveflanagan/data-server",
+    "containerize": "yarn build && docker build -t daveflanagan/data-server . && docker push daveflanagan/data-server"
   },
   "dependencies": {
     "@tsed/ajv": "^6.62.2",

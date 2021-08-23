@@ -10,7 +10,7 @@ interface CardProps {
 const Card: React.FC<CardProps> = (props: CardProps) => (
   <div className="card mb-4">
     {props.headerItems && (
-    <div className="card-header align-items-center bg-dark text-light">
+    <div className="card-header d-flex align-items-center bg-dark text-light">
       {props.headerItems}
     </div>
     )}

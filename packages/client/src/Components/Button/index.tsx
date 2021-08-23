@@ -18,29 +18,37 @@ enum ButtonType {
 
 type ButtonProps = {
   type: ButtonType,
+  className?: string,
   stretched?: boolean,
   small?: boolean,
-  text: string,
+  text?: string,
   onClick?: MouseEventHandler<HTMLButtonElement>,
   link?: string,
+  externalLink?: string,
   icon?: IconProp
 };
 
 const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
+  if (props.externalLink) {
+    return (
+      <a href={props.externalLink} target="_blank" className={['btn', props.type, props.small ? 'btn-sm' : '', props.stretched ? 'stretched-link' : '', props.className].join(' ')} rel="noreferrer">
+        {props.icon && <FontAwesomeIcon icon={props.icon} />}
+        {props.text && ` ${props.text}`}
+      </a>
+    );
+  }
   if (props.link) {
     return (
-      <Link to={props.link} className={['btn', props.type, props.small ? 'btn-sm' : '', props.stretched ? 'stretched-link' : ''].join(' ')}>
+      <Link to={props.link} className={['btn', props.type, props.small ? 'btn-sm' : '', props.stretched ? 'stretched-link' : '', props.className].join(' ')}>
         {props.icon && <FontAwesomeIcon icon={props.icon} />}
-        {' '}
-        {props.text}
+        {props.text && ` ${props.text}`}
       </Link>
     );
   }
   return (
-    <button type={props.onClick ? 'button' : 'submit'} onClick={props.onClick} className={['btn', props.type, props.stretched ? 'stretched-link' : ''].join(' ')}>
+    <button type={props.onClick ? 'button' : 'submit'} onClick={props.onClick} className={['btn', props.type, props.stretched ? 'stretched-link' : '', props.className].join(' ')}>
       {props.icon && <FontAwesomeIcon icon={props.icon} />}
-      {' '}
-      {props.text}
+      {props.text && ` ${props.text}`}
     </button>
   );
 };

@@ -87,7 +87,7 @@ const Device: React.FC = () => {
     <>
       <Helmet>
         <title>
-          Data Service |
+          Data Service |&nbsp;
           {device?.data?.name || (device?.isLoading ? 'Loading...' : 'Not Found')}
         </title>
       </Helmet>

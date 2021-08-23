@@ -14,19 +14,13 @@ import ScrollToTop from './Components/ScrollToTop';
 import Device from './Views/Device';
 import Container from './Components/Container';
 import Home from './Views/Home';
+import Header from './Components/Header';
 
 const App: React.FC = () => (
   <Provider store={store}>
     <Router>
       <ScrollToTop />
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div className="container">
-          <Link to="/" className="navbar-brand">
-            <FontAwesomeIcon className="me-2 text-primary" icon={faDatabase} />
-            Data Service
-          </Link>
-        </div>
-      </nav>
+      <Header />
       <Container>
         <Switch>
           <Route path="/:key">
