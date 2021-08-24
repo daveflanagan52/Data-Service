@@ -1,13 +1,9 @@
 import {
-  Column, Entity, OneToMany, PrimaryGeneratedColumn, BaseEntity,
+  Column, Entity, OneToMany, PrimaryGeneratedColumn, BaseEntity, Index
 } from 'typeorm';
 import { DataRow } from './DataRow';
 
-@Entity({
-  orderBy: {
-    createdAt: 'ASC',
-  },
-})
+@Entity()
 export class Device extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -18,6 +14,7 @@ export class Device extends BaseEntity {
   @Column()
   private: boolean;
 
+  @Index({ unique: true })
   @Column()
   publicKey: string;
 

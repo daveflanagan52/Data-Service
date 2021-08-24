@@ -1,14 +1,10 @@
 import {
-  Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, BaseEntity,
+  Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, BaseEntity, Index
 } from 'typeorm';
 import { DataEntry } from './DataEntry';
 import { Device } from './Device';
 
-@Entity({
-  orderBy: {
-    createdAt: 'DESC',
-  },
-})
+@Entity()
 export class DataRow extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -16,6 +12,7 @@ export class DataRow extends BaseEntity {
   @Column({ type: 'timestamp', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
+  @Index()
   @ManyToOne(() => Device, (device) => device.rows)
   device?: Device;
 
