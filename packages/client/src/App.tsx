@@ -3,18 +3,19 @@ import { Provider } from 'react-redux';
 import {
   BrowserRouter as Router, Switch, Route, Link,
 } from 'react-router-dom';
-import { faDatabase } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import moment from 'moment';
 
 import store from './Store';
 
 import './App.scss';
 
 import ScrollToTop from './Components/ScrollToTop';
-import Device from './Views/Device';
 import Container from './Components/Container';
-import Home from './Views/Home';
 import Header from './Components/Header';
+
+import Home from './Views/Home';
+import Device from './Views/Device';
+import Privacy from './Views/Privacy';
 
 const App: React.FC = () => (
   <Provider store={store}>
@@ -23,6 +24,9 @@ const App: React.FC = () => (
       <Header />
       <Container>
         <Switch>
+          <Route path="/privacy">
+            <Privacy />
+          </Route>
           <Route path="/:key">
             <Device />
           </Route>
@@ -30,6 +34,10 @@ const App: React.FC = () => (
             <Home />
           </Route>
         </Switch>
+        <footer className=" d-flex">
+          &copy; Copyright {moment().format('YYYY')} Dave Flanagan
+          <Link className="ms-auto" to="/privacy">Privacy Policy</Link>
+        </footer>
       </Container>
     </Router>
   </Provider>
