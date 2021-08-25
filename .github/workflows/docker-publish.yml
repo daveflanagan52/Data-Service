@@ -30,6 +30,4 @@ jobs:
 
       - run: npm install
 
-      - run: npm run install
-
       - run: npm run containerize

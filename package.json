@@ -16,7 +16,6 @@
     "eslint-fix": "lerna run eslint-fix",
     "start": "lerna run start",
     "build": "lerna run build",
-    "install": "lerna run install",
     "containerize": "lerna run containerize"
   },
   "dependencies": {

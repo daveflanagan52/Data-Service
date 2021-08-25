@@ -17,8 +17,7 @@
     "eslint-init": "eslint --init",
     "eslint-fix": "eslint src/**/*.{ts,tsx} --fix",
     "start": "webpack-dev-server --hot --inline --config webpack.config.development.js",
-    "build": "webpack -p --progress --config webpack.config.production.js",
-    "install": "npm install",
+    "build": "webpack --progress --config webpack.config.production.js",
     "containerize": "npm run build && docker build -t daveflanagan/data-client . && docker push daveflanagan/data-client"
   },
   "dependencies": {

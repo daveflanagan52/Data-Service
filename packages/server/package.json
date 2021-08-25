@@ -19,7 +19,6 @@
     "tsc": "tsc --project tsconfig.compile.json",
     "start": "tsnd --inspect --ignore-watch node_modules --respawn --transpile-only -r tsconfig-paths/register src/index.ts",
     "start:prod": "cross-env NODE_ENV=production node dist/index.js",
-    "install": "npm install",
     "build": "npm run tsc",
     "containerize": "npm run build && docker build -t daveflanagan/data-server . && docker push daveflanagan/data-server"
   },
