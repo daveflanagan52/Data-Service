@@ -24,7 +24,7 @@ class HomeResponse {
   lastEntry: Date | undefined;
 }
 
-class Response {
+interface Response {
   error?: string;
 
   success?: boolean;

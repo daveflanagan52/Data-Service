@@ -18,7 +18,8 @@
     "eslint-fix": "eslint src/**/*.{ts,tsx} --fix",
     "start": "webpack-dev-server --hot --inline --config webpack.config.development.js",
     "build": "webpack -p --progress --config webpack.config.production.js",
-    "containerize": "yarn build && docker build -t daveflanagan/data-client . && docker push daveflanagan/data-client"
+    "install": "npm install",
+    "containerize": "npm run build && docker build -t daveflanagan/data-client . && docker push daveflanagan/data-client"
   },
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.13.9",
